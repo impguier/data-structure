@@ -1,0 +1,16 @@
+{
+  "name": "data-structure",
+  "version": "1.0.0",
+  "description": "回炉重造",
+  "main": "linked-list.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "数据结构",
+    "javascript",
+    "data-structure"
+  ],
+  "author": "Gcl",
+  "license": "ISC"
+}
