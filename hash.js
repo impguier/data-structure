@@ -1,9 +1,3 @@
-class Node {
-    constructor (element) {
-        this.element = element
-        this.next = null
-    }
-}
 class LinkedList {
     constructor () {
         this.head = null
@@ -104,91 +98,95 @@ class LinkedList {
         return this.head
     }
 }
-class DoublyNode {
-    constructor(element) {
-        this.element = element
-        this.previous = null
-        this.next = null
-    }
-}
-class DoublyLinkedList {
+class Dictionary {
     constructor () {
-        this.head = null;
-        this.length = 0;
-        this.tail = null
+        this.items  = {};
     }
-    insert (element, position) {
-        if( position > -1 && position < this.length){
-            let node = new DoublyNode(element),
-                current = this.head,
-                index = 0,
-                previous
-            if(position === 0){
-                if( !this.head ){
-                    this.head = node;
-                    this.tail = node
-                } else {
-                    node.next = current;
-                    current.prev = node;
-                    this.head = node
-                }
-            } else if(position === this.length) {
-                current = this.tail;
-                current.next = node;
-                node.prev = current;
-                this.tail = node
-            } else {
-                while ( index++ < position ) {
-                    previous = current;
-                    current = current.next
-                }
-                previous.next = node;
-                node.next = current;
-                node.prev = previous;
-                current.prev  = node
-            }
-            this.length++
+    has ( element ) {
+        return element in this.items
+    }
+    set (key, value) {
+        this.items[key] = value
+    }
+    delete (key) {
+        if(this.has(key)){
+            delete this.items[key]
+            return true
         }else{
             return false
         }
     }
-    removeAt ( position ) {
-        if(position > -1 && position < this.length) {
-            let current = this.head,
-                index = 0,
-                previous;
-            if (position === 0) {
-                this.head = current.next
-                if (this.length === 1) {
-                    this.head = null;
-                } else {
-                    this.head.prev = null;
+    get (key) {
+        return this.has(key) ? this.items[key] : undefined
+    }
+    keys () {
+        return Object.keys(this.items)
+    }
+    getItems () {
+        return this.items
+    }
+}
+function ValuePair (key, value){
+    this.key = key;
+    this.value = value;
+    this.toString = function(){
+        return '[' + this.key + '-' + this.value + ']'
+    }
+}
+class Hash {
+    constructor () {
+        this.table = []
+    }
+    loseloseHashCode (key) {
+        let hash = 0;
+        for(let i = 0; i < key.length; i++) {
+            hash += key.charCodeAt(i)
+        }
+        return hash % 37
+    }
+    put (key, value) {
+        /*let position = this.loseloseHashCode(key)
+        this.table[position] = value*/
+        let position = this.loseloseHashCode(key)
+        if(!this.table[position]){
+            this.table[position] = new LinkedList()
+        }
+        this.table[position].append(new ValuePair(key, value))
+    }
+    get (key) {
+        let position = this.loseloseHashCode(key)
+        if(this.table[position]){
+            let current = this.table[position].getHead()
+            while(current.next){
+                if(current.element.key === key ){
+                    return current.element.value;
                 }
-            } else if (position === this.length - 1) {
-                current = this.tail;
-                this.tail = current.prev;
-                this.tail.next = null
-            } else {
-                while (index++ < position) {
-                    previous = current;
-                    current = current.next;
-                }
-                previous.next = current.next;
-                current.next.prev = previous
+                current = current.next;
             }
-            this.length--
-        } else {
-            return null
+            if(current.element.key === key){
+                return current.element.value
+            }
+        }
+        return undefined
+    }
+    remove (key) {
+        let position = this.loseloseHashCode(key)
+        if(this.table[position]){
+            let current = this.table[position].getHead();
+            while(current.next){
+                if(current.element.key === key){
+                    this.table[position].remove(current.element);
+                    if(this.table[position].isEmpty()){
+                        this.table[position] = undefined
+                    }
+                }
+            }
+            if(current.element.key === key ){
+                this.table[position].remove(current.element);
+                if(this.table[position].isEmpty()){
+                    this.table[position] = undefined
+                }
+            }
         }
     }
 }
-
-let linkList = new LinkedList();
-linkList.append("1")
-linkList.append("2")
-linkList.append("3")
-linkList.append("4")
-
-console.log(linkList.toString())
-
-export default {LinkedList}
